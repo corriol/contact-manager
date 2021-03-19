@@ -27,9 +27,9 @@ Nota: si s'ha usat validació en el navegador (HTML5) cal desactivar-la afegint 
 
 Caldrà realitzar les validacions ja indicades en el pas 1, més les següents:
 * `firstname`, no pot superar els 25 caracters.
-* `phone`, ha de contenir 9 digits (expressió regular: ^\d{9}$).
+* `phone`, ha de contenir 9 digits (expressió regular: `^\d{9}$`).
 * `email`, ha de ser una adreça electrònica correcta.
-* `zipcode`, ha de contenir 5 dígits (expressió regular: ^\d{5}$).
+* `zipcode`, ha de contenir 5 dígits (expressió regular: `^\d{5}$`).
 
 S'avaluaran tots els camps i si hi ha error/s caldrà mostrar-lo/s. Si no hi ha errors es mostraran les dades introduïdes per l'usuari.
 
