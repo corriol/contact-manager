@@ -26,6 +26,7 @@ El formulari s'enviarà al mateix fitxer i mostrarà les dades enviades **en for
 Nota: si s'ha usat validació en el navegador (HTML5) cal desactivar-la afegint l'atribut `novalidate`a l'element `form`.
 
 Caldrà realitzar les validacions ja indicades en el pas 1, més les següents:
+
 * `firstname`, no pot superar els 25 caracters.
 * `phone`, ha de contenir 9 digits (expressió regular: `^\d{9}$`).
 * `email`, ha de ser una adreça electrònica correcta.
