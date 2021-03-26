@@ -3,22 +3,22 @@ declare(strict_types=1);
 $errors = [];
 $isPost = false;
 
+$email = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isPost = true;
-//Filters
+
+    //Regular expressions
     $phoneExpReg = "/^\d{9}$/";
     $zipCodeExpReg = "/^\d{5}$/";
 
-    $firstname = filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_STRING);
-    $lastname = filter_input(INPUT_POST, "lastname", FILTER_SANITIZE_STRING);
+    //Getting values from $_POST with filter_input
+    $firstname = filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $lastname = filter_input(INPUT_POST, "lastname", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $phone = filter_input(INPUT_POST, "phone", FILTER_VALIDATE_REGEXP, ["options" => ["regexp" => $phoneExpReg]]);
     $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
     $address = filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING);
     $city = filter_input(INPUT_POST, "city", FILTER_SANITIZE_STRING);
     $zipCode = filter_input(INPUT_POST, "zip", FILTER_SANITIZE_STRING);
-
-//Regular expressions
-
 
     if (empty($firstname)) {
         $errors["firstname"] = "First name is mandatory";
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="index.php">
-                            Conctacts <span class="sr-only">(current)</span>
+                            Contacts <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -114,7 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>-->
             </div>
             <?php if ($isPost && !empty($errors)): ?>
-
                 <div class="container">
                     <ul class="text-danger">
                         <?php foreach ($errors as $error) : ?>
@@ -123,13 +122,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </ul>
                 </div>
             <?php endif; ?>
-            <form class="needs-validation row" action="<?= $_SERVER['PHP_SELF']; ?>" method="post" novalidate>
-
+            <form class="row" action="contact-create.php" method="post" novalidate>
                 <div class="col-6 form-group">
                     <label for="firstname">First name:</label>
-
-                    <input id="firstname" type="text" name="firstname" value="<?= $_POST["firstname"] ?? "" ?>"
-                             class="form-control"  placeholder="First name..." required>
+                    <input id="firstname" type="text" name="firstname" value="<?= $firstname ?? "" ?>"
+                           class="form-control" placeholder="First name..." required>
                     <?php if (!empty($errors["firstname"])) : ?>
                         <div class="invalid-feedback d-block">
                             <?= $errors["firstname"] ?>
@@ -138,38 +135,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="form-group col-6">
                     <label for="lastname">Last name:</label>
-                    <input id="lastname" type="text" name="lastname" value="<?= $_POST["lastname"] ?? "" ?>"
+                    <input id="lastname" type="text" name="lastname" value="<?= $lastname ?? "" ?>"
                            class="form-control" placeholder="Last name..." required>
                 </div>
 
                 <div class="form-group col-6">
                     <label for="phone">Phone:</label>
-                    <input id="phone" type="text" name="phone" value="<?= $_POST["phone"] ?? "" ?>"
+                    <input id="phone" type="text" name="phone" value="<?= $phone ?? "" ?>"
                            class="form-control" placeholder="Phone number..." required>
                 </div>
 
                 <div class="form-group col-6">
                     <label for="email">Email:</label>
-                    <input id="email" type="email" name="email" value="<?= $_POST["email"] ?? "" ?>"
+                    <input id="email" type="email" name="email" value="<?= $email; ?>"
                            class="form-control" placeholder="Email..." required>
                 </div>
 
                 <div class="form-group col-6">
                     <label for="address">Address:</label>
-                    <input id="address" type="text" name="address" value="<?= $_POST["address"] ?? "" ?>"
+                    <input id="address" type="text" name="address" value="<?= $address ?? "" ?>"
                            class="form-control" placeholder="Adress...">
                 </div>
 
                 <div class="form-group col-4">
                     <label for="city">City:</label>
                     <input class="form-control" id="city" type="text" name="city"
-                           value="<?= $_POST["city"] ?? "" ?>" placeholder="Insert city...">
+                           value="<?= $city ?? "" ?>" placeholder="City...">
                 </div>
 
                 <div class="form-group col-2">
                     <label for="zip">Zip Code:</label>
 
-                    <input id="zip" type="text" name="zip" value="<?= $_POST["zip"] ?? "" ?>"
+                    <input id="zip" type="text" name="zip" value="<?= $zipCode ?? "" ?>"
                            class="form-control" placeholder="Zip code...">
                 </div>
 
@@ -190,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <table class="table">
                                 <tr>
                                     <th scope="row">First name</th>
-                                    <td><?= $_POST["firstname"] ?></td>
+                                    <td><?= $firstname ?></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Last name</th>
