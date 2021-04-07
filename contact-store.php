@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Getting values from $_POST with filter_input
     $firstname = filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $lastname = filter_input(INPUT_POST, "lastname", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $lastname = filter_input(INPUT_POST, "lastname", FILTER_SANITIZE_SPECIAL_CHARS);
     $phone = filter_input(INPUT_POST, "phone", FILTER_VALIDATE_REGEXP, ["options" => ["regexp" => $phoneExpReg]]);
     $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
     $address = filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING);
@@ -77,7 +77,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         header("Location: contact-create.php");
         exit();
+    } else {
+        // inserting
+        $pdo = create_connection("mysql:host=mysql-server;dbname=contact-manager", "contacts-user_db",
+            "user");
+
+        $sql = "INSERT INTO `contact`(`firstname`, `lastname`, `phone`, `email`, `city`, `address`, `zipcode`,
+                      `province`) VALUES (:firstname, :lastname,:phone,:email,:city,:address, :zipcode, :province)";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue("firstname", $firstname);
+        $stmt->bindValue("lastname", $lastname);
+        $stmt->bindValue("phone", $phone);
+        $stmt->bindValue("email", $email);
+        $stmt->bindValue("city", $city);
+        $stmt->bindValue("address", $address);
+        $stmt->bindValue("zipcode",  $zipCode);
+        $stmt->bindValue("province",  $province);
+
+        $stmt->execute();
+
+
     }
+
 
 } else
     die('GET method not allowed');

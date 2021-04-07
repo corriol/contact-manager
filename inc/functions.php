@@ -19,7 +19,8 @@ function getProvinces(): array
 }
 
 function create_connection(string $dsn, $user, $password): PDO {
-    $pdo = new PDO("$dsn", $user, $password);
+    $pdo = new PDO("$dsn", $user, $password, [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     return $pdo;
 }
