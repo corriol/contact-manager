@@ -132,9 +132,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="province">Province:</label>
 
                 <select id="province" name="province" class="custom-select">
-                    <option selected disabled value="">Choose...</option>
-                    <?php foreach ($provinces as $key=>$name) :?>
-                    <option value="<?=$key?>"><?=$name?></option>
+                    <?php if (!empty($province)) : ?>
+                        <option disabled value="">Choose...</option>
+                    <?php else: ?>
+                        <option selected disabled value="">Choose...</option>
+                    <?php endif; ?>
+
+                    <?php foreach ($provinces as $key => $name) : ?>
+                        <?php if ($key != $province) : ?>
+                            <option value="<?= $key ?>"><?= $name ?></option>
+                        <?php else: ?>
+                            <option selected value="<?= $key ?>"><?= $name ?></option>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </select>
             </div>
