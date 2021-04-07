@@ -191,6 +191,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <th scope="row">Zip code</th>
                                 <td><?= $zipCode ?></td>
                             </tr>
+
+                            <tr>
+                                <th scope="row">Province</th>
+                                <td><?= $provinces[$province] ?></td>
+                            </tr>
+
                         </table>
                     </div>
                 </div>
