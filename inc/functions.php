@@ -17,3 +17,9 @@ function getProvinces(): array
     // var_dump($provinces);
     return $provinces;
 }
+
+function create_connection(string $dsn, $user, $password): PDO {
+    $pdo = new PDO("$dsn", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $pdo;
+}
