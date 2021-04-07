@@ -1,5 +1,12 @@
 <?php
 declare(strict_types=1);
+
+// Including the getProvinces function
+include 'inc/functions.php';
+
+// getting provinces
+$provinces = getProvinces();
+
 $errors = [];
 $isPost = false;
 
@@ -19,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING);
     $city = filter_input(INPUT_POST, "city", FILTER_SANITIZE_STRING);
     $zipCode = filter_input(INPUT_POST, "zip", FILTER_SANITIZE_STRING);
+    $province = filter_input(INPUT_POST, "province");
 
     if (empty($firstname)) {
         $errors["firstname"] = "First name is mandatory";
@@ -44,6 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = "ZipCode doesn't match pattern";
         }
     }
+
+    if (empty($province)) {
+        $errors[] = "You must select a province";
+    }
+
 }
 ?>
 <?php include 'partials/header.partial.php' ?>
@@ -102,17 +115,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        class="form-control" placeholder="Adress...">
             </div>
 
-            <div class="form-group col-4">
+            <div class="form-group col-6">
                 <label for="city">City:</label>
                 <input class="form-control" id="city" type="text" name="city"
                        value="<?= $city ?? "" ?>" placeholder="City...">
             </div>
 
-            <div class="form-group col-2">
+            <div class="form-group col-4">
                 <label for="zip">Zip Code:</label>
 
                 <input id="zip" type="text" name="zip" value="<?= $zipCode ?? "" ?>"
                        class="form-control" placeholder="Zip code...">
+            </div>
+
+            <div class="form-group col-8">
+                <label for="province">Province:</label>
+
+                <select id="province" name="province" class="custom-select">
+                    <option selected disabled value="">Choose...</option>
+                    <?php foreach ($provinces as $key=>$name) :?>
+                    <option value="<?=$key?>"><?=$name?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div>
