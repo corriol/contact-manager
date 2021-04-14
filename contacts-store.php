@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION["zipcode"] = $zipCode;
         $_SESSION["province"] = $province;
 
-        header("Location: contact-create.php");
+        header("Location: contacts-create.php");
         exit();
     } else {
         // inserting
