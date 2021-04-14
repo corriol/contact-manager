@@ -1,5 +1,6 @@
 <?php
 include "inc/functions.php";
+session_start();
 $pdo = create_connection("mysql:host=mysql-server;dbname=contact-manager", "contacts-user_db", "user");
 
 $stmt = $pdo->query("SELECT * FROM contact");
@@ -17,6 +18,12 @@ $contacts = $stmt->fetchAll();
             </div>
         </div>
         <div>
+            <!--TODO: Implement Bootstrap alert format -->
+            <?php
+                echo $_SESSION["message"]?? "";
+                session_unset()
+            ?>
+
             <table class="table">
                 <tr><th>Name</th><th>Last name</th><th>Phone number</th><th>Email address</th><th>Actions</th></tr>
                 <?php foreach ($contacts as $contact):?>
