@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+define("MAX_PHOTO_SIZE", 200 * 1024);
+
 // Including the getProvinces function
 include 'inc/functions.php';
 
@@ -27,6 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = filter_input(INPUT_POST, "city", FILTER_SANITIZE_STRING);
     $zipCode = filter_input(INPUT_POST, "zip", FILTER_SANITIZE_STRING);
     $province = filter_input(INPUT_POST, "province");
+
+    // el nom de la foto l'inicialitzem buit
+    $photoFileName = "";
 
     if (empty($firstname)) {
         $errors["firstname"] = "First name is mandatory";
@@ -57,7 +62,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "You must select a province";
     }
 
-    // if there are errors we redirect to form page
+    // 1. Gestionant la pujada
+    // En photoFile guardem l'array en la informació de la pujada
+    $photoFile = $_FILES["photo"];
+
+    // 1.1. Comprovem l'estat de l'error abans que res
+    // si s'ha pujat un fitxer, el gestionem
+    if ($photoFile["error"] === UPLOAD_ERR_OK) {
+        // comprovem la gràndària
+        if ($photoFile["size"] > MAX_PHOTO_SIZE) {
+            $errors[] = "The photo exceeds maximum size";
+        }
+        // comprovem el tipus
+        if (!in_array($photoFile["type"], ["image/jpg", "image/jpeg"])) {
+            $errors[] = "Invalid image type";
+        }
+        // si no hi ha errores seguim
+        if (empty($errors)) {
+            // preparem el nom del fitxer on es guardarà
+            // uniqid genera un nom aleatori únic, per si de cas es pot afegir un prefixe
+            // l'extensió la posem a pèl perquè serà jpg sí o sí però caldria extraure-la del nom original.
+            // filename serà el valor que guardarem a la base de dades
+            $photoFileName = uniqid("photo") .".jpg";
+
+            // ara ja podem moure
+            // com que no posem / davant del directori photo serà una ruta relativa al fitxer php actual
+            move_uploaded_file($photoFile["tmp_name"], "photos/". $photoFileName);
+
+        }
+
+    } // no s'ha pujat fitxer
+    elseif ($photoFile["error"] === UPLOAD_ERR_NO_FILE) {
+
+    } // qualsevol altre valor serà un error
+    else {
+        $errors[] = "Error uploading photo";
+    }
+
+
+// if there are errors we redirect to form page
     if (!empty($errors)) {
         // starting session management
         session_start();
@@ -83,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "user");
 
         $sql = "INSERT INTO `contact`(`firstname`, `lastname`, `phone`, `email`, `city`, `address`, `zipcode`,
-                      `province`) VALUES (:firstname, :lastname,:phone,:email,:city,:address, :zipcode, :province)";
+                      `province`, `photo`) VALUES (:firstname, :lastname,:phone,:email,:city,:address, :zipcode, :province, :photo)";
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue("firstname", $firstname);
@@ -92,15 +135,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue("email", $email);
         $stmt->bindValue("city", $city);
         $stmt->bindValue("address", $address);
-        $stmt->bindValue("zipcode",  $zipCode);
-        $stmt->bindValue("province",  $province);
+        $stmt->bindValue("zipcode", $zipCode);
+        $stmt->bindValue("province", $province);
+        // com que hem inicialitzat la variable en cadena buida encara que no s'haja pujat foto
+        // existirà la variable
+        $stmt->bindValue("photo", $photoFileName);
 
         $stmt->execute();
-
-
     }
-
-
 } else
     die('GET method not allowed');
 ?>

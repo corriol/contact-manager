@@ -38,7 +38,7 @@ $address = $contact["address"] ?? "";
 $city = $contact["city"] ?? "";
 $zipCode = $contact["zipcode"] ??"";
 $province = $contact["province"]??"";
-
+$photo = $contact["photo"] ?? "";
 // once read we must clean session variables
 session_unset();
 ?>
@@ -63,7 +63,7 @@ session_unset();
         </ul>
     </div>
     <?php endif; ?>
-    <form class="row" action="contacts-update.php" method="post" novalidate>
+    <form class="row" action="contacts-update.php" method="post"  enctype="multipart/form-data" novalidate>
         <input name="id" type="hidden" value="<?=$contactId?>">
         <div class="col-6 form-group">
             <label for="firstname">First name:</label>
@@ -79,6 +79,17 @@ session_unset();
             <label for="lastname">Last name:</label>
             <input id="lastname" type="text" name="lastname" value="<?= $lastname ?? "" ?>"
                    class="form-control" placeholder="Last name..." required>
+        </div>
+
+        <div class="form-group col-4">
+            <label for="photo">Photo:</label>
+
+            <input type="hidden" name="photo"
+                   value="<?=$photo ?? "" ?>">
+
+            <input id="photo" type="file" name="photo"
+                   class="form-control-file">
+            <small><?=$photo ?? "" ?></small>
         </div>
 
         <div class="form-group col-6">

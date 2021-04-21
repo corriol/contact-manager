@@ -37,6 +37,17 @@ if ($isPost === false) {
     $id = filter_input(INPUT_POST, "id", FILTER_VALIDATE_INT);
 
     if ($userAnswer === ANSWER_YES) {
+        // com que he saber el nom de la photo per esborrar-la he de fer una consulta addicional
+        $stmt = $pdo->prepare("SELECT * FROM contact WHERE id = :id");
+        $stmt->bindValue("id", $id);
+        $stmt->execute();
+        $contact = $stmt->fetch();
+
+        // esborre la foto
+        unlink("photos/{$contact["photo"]}");
+
+
+        // esborre de la base de dades
         $stmt = $pdo->prepare("DELETE FROM contact WHERE id = :id");
         $stmt->bindValue("id", $id);
         $stmt->execute();

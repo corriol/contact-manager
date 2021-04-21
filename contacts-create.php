@@ -50,8 +50,8 @@ session_unset();
         </ul>
     </div>
     <?php endif; ?>
-    <form class="row" action="contacts-store.php" method="post" novalidate>
-        <div class="col-6 form-group">
+    <form class="row" action="contacts-store.php" method="post" enctype="multipart/form-data" novalidate>
+        <div class="col-4 form-group">
             <label for="firstname">First name:</label>
             <input id="firstname" type="text" name="firstname" value="<?= $firstname ?? "" ?>"
                    class="form-control" placeholder="First name..." required>
@@ -61,10 +61,16 @@ session_unset();
             </div>
             <?php endif; ?>
         </div>
-        <div class="form-group col-6">
+        <div class="form-group col-4">
             <label for="lastname">Last name:</label>
             <input id="lastname" type="text" name="lastname" value="<?= $lastname ?? "" ?>"
                    class="form-control" placeholder="Last name..." required>
+        </div>
+
+        <div class="form-group col-4">
+            <label for="photo">Photo:</label>
+            <input id="photo" type="file" name="photo"
+                   class="form-control-file">
         </div>
 
         <div class="form-group col-6">
