@@ -18,9 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phoneExpReg = "/^\d{9}$/";
     $zipCodeExpReg = "/^\d{5}$/";
 
+    $id = filter_input(INPUT_POST, "id", FILTER_VALIDATE_INT);
     //Getting values from $_POST with filter_input
     $firstname = filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $lastname = filter_input(INPUT_POST, "lastname", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $lastname = filter_input(INPUT_POST, "lastname", FILTER_SANITIZE_SPECIAL_CHARS);
     $phone = filter_input(INPUT_POST, "phone", FILTER_VALIDATE_REGEXP, ["options" => ["regexp" => $phoneExpReg]]);
     $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
     $address = filter_input(INPUT_POST, "address", FILTER_SANITIZE_STRING);
@@ -75,9 +76,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION["zipcode"] = $zipCode;
         $_SESSION["province"] = $province;
 
-        header("Location: contact-create.php");
+        header("Location: contacts-edit.php?id=$id");
         exit();
+    } else {
+        // inserting
+        $pdo = create_connection("mysql:host=mysql-server;dbname=contact-manager", "contacts-user_db",
+            "user");
+
+        $sql = "UPDATE `contact` SET `firstname`=:firstname, `lastname`=:lastname, `phone`=:phone, `email`=:email, 
+                          `city`=:city, `address`=:address, `zipcode`=:zipcode, `province` =:province 
+                        WHERE id =:id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue("id", $id);
+        $stmt->bindValue("firstname", $firstname);
+        $stmt->bindValue("lastname", $lastname);
+        $stmt->bindValue("phone", $phone);
+        $stmt->bindValue("email", $email);
+        $stmt->bindValue("city", $city);
+        $stmt->bindValue("address", $address);
+        $stmt->bindValue("zipcode",  $zipCode);
+        $stmt->bindValue("province",  $province);
+
+        $stmt->execute();
+
     }
+
 
 } else
     die('GET method not allowed');
@@ -86,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">New contact</h1>
+            <h1 class="h2">Edit contact</h1>
             <!--<div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
                     <a href="#" class="btn btn-sm btn-outline-secondary">New contact</a>
@@ -97,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         <div class="container">
-            <h2>Contact successfully created</h2>
+            <h2>Contact updated successfully!</h2>
             <div class="row text-center">
                 <div class="col-lg-7 col-xl-7 card flex-row mx-auto px-0 mt-5 border">
                     <table class="table">

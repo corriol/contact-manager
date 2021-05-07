@@ -50,7 +50,7 @@ session_unset();
         </ul>
     </div>
     <?php endif; ?>
-    <form class="row" action="contact-store.php" method="post" novalidate>
+    <form class="row" action="contacts-store.php" method="post" novalidate>
         <div class="col-6 form-group">
             <label for="firstname">First name:</label>
             <input id="firstname" type="text" name="firstname" value="<?= $firstname ?? "" ?>"
