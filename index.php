@@ -1,10 +1,14 @@
 <?php
-include "inc/functions.php";
-session_start();
-$pdo = create_connection("mysql:host=mysql-server;dbname=contact-manager", "contacts-user_db", "user");
 
-$stmt = $pdo->query("SELECT * FROM contact");
-$contacts = $stmt->fetchAll();
+require "src/bootstrap.php";
+
+use App\Database;
+use App\Model\ContactModel;
+
+session_start();
+
+$contactModel = new ContactModel(Database::getConnection());
+$contacts = $contactModel->findAll();
 ?>
 <?php include 'partials/header.partial.php' ?>
     <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
@@ -28,13 +32,13 @@ $contacts = $stmt->fetchAll();
                 <tr><th>Name</th><th>Last name</th><th>Phone number</th><th>Email address</th><th>Actions</th></tr>
                 <?php foreach ($contacts as $contact):?>
                     <tr>
-                        <td><?=$contact["firstname"]?></td>
-                        <td><?=$contact["lastname"]?></td>
-                        <td><?=$contact["phone"]?></td>
-                        <td><?=$contact["email"]?></td>
-                        <td><a href="contacts.php?id=<?=$contact["id"]?>">Show</a>
-                            <a href="contacts-edit.php?id=<?=$contact["id"]?>">Edit</a>
-                            <a href="contacts-delete.php?id=<?=$contact["id"]?>">Delete</a>
+                        <td><?=$contact->getFirstname()?></td>
+                        <td><?=$contact->getLastname() ?></td>
+                        <td><?=$contact->getPhone();?></td>
+                        <td><?=$contact->getEmail();?></td>
+                        <td><a href="contacts.php?id=<?=$contact->getId()?>">Show</a>
+                            <a href="contacts-edit.php?id=<?=$contact->getId()?>">Edit</a>
+                            <a href="contacts-delete.php?id=<?=$contact->getId()?>">Delete</a>
                             </td>
                     </tr>
                 <?php endforeach; ?>

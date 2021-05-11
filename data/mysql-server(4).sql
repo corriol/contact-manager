@@ -40,7 +40,8 @@ CREATE TABLE `contact` (
   `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
   `zipcode` char(5) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
   `province` char(5) CHARACTER SET utf8 COLLATE utf8_spanish_ci DEFAULT NULL,
-  `photo` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL
+  `photo` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `updated_at` DATETIME DEFAULT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
